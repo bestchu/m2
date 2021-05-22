@@ -1,0 +1,19 @@
+{
+  "name": "m2",
+  "version": "1.0.0",
+  "description": "一个简单易用的框架，一键生成数据库模型、接口、视图",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bestchu/m2.git"
+  },
+  "author": "xiaochu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bestchu/m2/issues"
+  },
+  "homepage": "https://github.com/bestchu/m2#readme"
+}
