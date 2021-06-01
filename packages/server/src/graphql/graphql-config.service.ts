@@ -1,14 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { GqlModuleOptions, GqlOptionsFactory } from '@nestjs/graphql';
-import { PrismaService } from '../prisma/prisma.service';
-import { ConfigKeys, GraphqlConfig, AppConfig } from 'src/config';
+import { PrismaService } from '../prisma';
+import { ConfigKeys, Config } from 'src/config';
 import { createContext } from './graphql-context';
 @Injectable()
 export class GraphqlConfigService implements GqlOptionsFactory {
   @Inject(ConfigKeys.graphql)
-  private graphqlConfig: GraphqlConfig;
+  private graphqlConfig: Config['graphql'];
   @Inject(ConfigKeys.app)
-  private appConfig: AppConfig;
+  private appConfig: Config['app'];
   @Inject(PrismaService)
   private prisma: PrismaService;
   public createGqlOptions(): Promise<GqlModuleOptions> | GqlModuleOptions {

@@ -5,3 +5,4 @@ export const ConfigModule = Module.forRoot({
   load: ConfigList,
   isGlobal: true,
 });
+console.log(ConfigModule);

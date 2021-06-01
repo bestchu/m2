@@ -2,9 +2,9 @@ import { ConfigType, registerAs } from '@nestjs/config';
 
 export const key = 'app';
 export const config = registerAs(key, () => ({
-  serverName: 'NEcho',
+  serverName: process.env.APP_NAME || 'm2',
   host: process.env.APP_HOST || '0.0.0.0',
-  port: process.env.APP_PORT || 8091,
+  port: +process.env.APP_PORT || 8090,
   debug: true,
   version: '',
   // socketPort: 8081,

@@ -7,12 +7,13 @@ import {
 } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from './client';
 export let prismaClient: PrismaService;
 @Injectable()
 export class PrismaService
   extends PrismaClient
-  implements OnModuleInit, OnModuleDestroy {
+  implements OnModuleInit, OnModuleDestroy
+{
   private readonly logger = new Logger(PrismaService.name);
   @Inject(REQUEST)
   private request: Request;

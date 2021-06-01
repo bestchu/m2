@@ -1,0 +1,112 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["filterJson"]
+  output          = "../src/prisma/client"
+}
+
+enum Gender {
+  //@g.label("未知")
+  unknown
+  //@g.label("男人")
+  wan
+  //@g.label("女人")
+  woman
+  //@@g.label("性别")
+}
+
+// generator nestjs {
+//   // https://github.com/wSedlacek/prisma-generators/tree/master/libs/nestjs
+//   //  provider    = "ts-node ./prisma/prisma-nest-generate/cli/generator.ts"
+//   provider       = "node ./dist/prisma/prisma-nest-generate/cli/generator.js"
+//   output         = "src"
+//   emptyOutputDir = false
+//   modules        = "account;concrete-monitor:modules"
+//   emitDMMF       = true
+//   defaultTake    = 20
+// }
+
+// https://developers.weixin.qq.com/miniprogram/dev/api/open-api/user-info/UserInfo.html
+model Account {
+  id        String            @id @default(cuid())
+  //@g.label("用户名")
+  //@g.desc("用户名")
+  //@g.helpText("")
+  //@g.action("create","update","filterMany","filterOne")
+  //@g.readonly()
+  //@g.search("keyword","contains")
+  //@g.update()
+  //@g.create("对外字段名","操作运算符")
+  username  String            @unique @db.VarChar(128)
+  email     String?           @unique @db.VarChar(128)
+  mobile    String?           @unique @db.VarChar(32)
+  //@g.label("用户昵称")
+  nickName  String?
+  //@g.label("用户头像图片")
+  avatarUrl String?
+  //性别 0：未知、1：男、2：女
+  //@g.label("用户性别")
+  gender    Int?
+  //@g.label("用户所在国家")
+  province  String?
+  //@g.label("用户所在省份")
+  city      String?
+  //@g.label("用户所在城市")
+  country   String?
+  //显示 country，province，city 所用的语言
+  //@g.label("用户所用的语言")
+  language  String?
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  //@g.ignore()
+  localAuth AccountLocalAuth?
+  authLogs  AccountAuthLog[]
+  //@@g.module("account")
+  //@@g.exclude("create")
+
+  @@map(name: "account")
+}
+
+model AccountLocalAuth {
+  aid       String   @id
+  account   Account  @relation(fields: [aid], references: [id])
+  password  String   @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  //@@g.module("account")
+  @@map(name: "account_local_auth")
+}
+
+model AccountAuthLog {
+  id             String   @id @default(cuid())
+  aid            String
+  account        Account  @relation(fields: [aid], references: [id])
+  // 认证方式 password sms wechat qq
+  authType       String   @db.VarChar(32)
+  // ip
+  ip             String   @db.VarChar(46)
+  // 浏览器版本或App版本
+  version        String   @db.VarChar(64)
+  // 浏览器名称或App名称
+  platform       String   @db.VarChar(64)
+  // 屏幕分辨率
+  screen         String?  @db.VarChar(12)
+  // 操作系统名称
+  osFamily       String   @db.VarChar(64)
+  // 操作系统位数 32 or 64
+  osArchitecture String   @db.VarChar(2)
+  // 操作系统版本
+  osVersion      String   @db.VarChar(64)
+  createdAt      DateTime @default(now())
+
+  //@@g.module("account")
+  @@map(name: "account_auth_log")
+}

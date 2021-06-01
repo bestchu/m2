@@ -4,7 +4,9 @@ import { ConfigService } from '@nestjs/config';
 import type { Config } from './config';
 import { ConfigKeys } from './config';
 import { EOL } from 'os';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
+import { swaggerSetup } from './swagger';
+import { json, urlencoded } from 'body-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,6 +18,23 @@ async function bootstrap() {
   const swaggerConfig = configService.get<Config['swagger']>(
     ConfigKeys.swagger,
   );
+  app.use(json({ limit: appConfig.bodyLimit }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      skipMissingProperties: false,
+    }),
+  );
+  app.use(
+    urlencoded({
+      limit: appConfig.bodyLimit,
+      extended: true,
+      parameterLimit: appConfig.bodyParameterLimit,
+    }),
+  );
+  swaggerSetup(app, configService);
+  // Starts listening for shutdown hooks
+  app.enableShutdownHooks();
   await app.listen(appConfig.port, appConfig.host, () => {
     Logger.log(`${appConfig.serverName} Server ready${EOL}
     swagger: http://localhost:${appConfig.port}${swaggerConfig.path}${EOL}
