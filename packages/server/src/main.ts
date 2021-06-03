@@ -1,8 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ConfigService } from '@nestjs/config';
-import type { Config } from './config';
-import { ConfigKeys } from './config';
+import { Conf, confKey } from './config';
 import { EOL } from 'os';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { swaggerSetup } from './swagger';
@@ -10,14 +8,9 @@ import { json, urlencoded } from 'body-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const configService = app.get(ConfigService);
-  const appConfig = configService.get<Config['app']>(ConfigKeys.app);
-  const graphqlConfig = configService.get<Config['graphql']>(
-    ConfigKeys.graphql,
-  );
-  const swaggerConfig = configService.get<Config['swagger']>(
-    ConfigKeys.swagger,
-  );
+  const appConfig = app.get<Conf<'app'>>(confKey('app'));
+  const graphqlConfig = app.get<Conf<'graphql'>>(confKey('graphql'));
+  const swaggerConfig = app.get<Conf<'swagger'>>(confKey('swagger'));
   app.use(json({ limit: appConfig.bodyLimit }));
   app.useGlobalPipes(
     new ValidationPipe({
@@ -32,7 +25,7 @@ async function bootstrap() {
       parameterLimit: appConfig.bodyParameterLimit,
     }),
   );
-  swaggerSetup(app, configService);
+  swaggerSetup(app);
   // Starts listening for shutdown hooks
   app.enableShutdownHooks();
   await app.listen(appConfig.port, appConfig.host, () => {

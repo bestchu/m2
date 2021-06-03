@@ -2,22 +2,15 @@ import * as AppConfig from './app.config';
 import * as SwaggerConfig from './swagger.config';
 import * as GraphqlConfig from './graphql.config';
 import * as SecurityConfig from './security.config';
-
-export const ConfigList = [
-  AppConfig.config,
-  SecurityConfig.config,
-  SwaggerConfig.config,
-  GraphqlConfig.config,
-];
-export const ConfigKeys = {
-  [AppConfig.key]: AppConfig.key,
-  [SwaggerConfig.key]: SwaggerConfig.key,
-  [GraphqlConfig.key]: GraphqlConfig.key,
-  [SecurityConfig.key]: SecurityConfig.key,
+import { ConfigType } from '@nestjs/config';
+type ConfigKeys = keyof typeof Conf;
+export const Conf = {
+  [AppConfig.key]: AppConfig.config,
+  [SwaggerConfig.key]: SwaggerConfig.config,
+  [GraphqlConfig.key]: GraphqlConfig.config,
+  [SecurityConfig.key]: SecurityConfig.config,
 };
-export interface Config {
-  [AppConfig.key]: AppConfig.Config;
-  [SwaggerConfig.key]: SwaggerConfig.Config;
-  [GraphqlConfig.key]: GraphqlConfig.Config;
-  [SecurityConfig.key]: SecurityConfig.Config;
+export function confKey(key: ConfigKeys) {
+  return Conf[key].KEY;
 }
+export type Conf<key extends ConfigKeys> = ConfigType<typeof Conf[key]>;

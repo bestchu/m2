@@ -1,4 +1,4 @@
-import { ConfigType, registerAs } from '@nestjs/config';
+import { registerAs } from '@nestjs/config';
 
 export const key = 'app';
 export const config = registerAs(key, () => ({
@@ -14,4 +14,3 @@ export const config = registerAs(key, () => ({
   bodyLimit: '50mb',
   bodyParameterLimit: 50000,
 }));
-export type Config = ConfigType<typeof config>;

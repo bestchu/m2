@@ -4,7 +4,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from '../services';
 import { Account } from '../../account/entities';
-import { ConfigKeys, Config } from '../../config';
+import { Conf, confKey } from '../../config';
 import { Request } from 'express';
 const authHeaderAsBearerToken = ExtractJwt.fromAuthHeaderAsBearerToken();
 function fromAuthHeaderAsBearerToken(request: Request) {
@@ -14,7 +14,7 @@ function fromAuthHeaderAsBearerToken(request: Request) {
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private readonly authService: AuthService,
-    @Inject(ConfigKeys.security) private securityConfig: Config['security'],
+    @Inject(confKey('security')) private securityConfig: Conf<'security'>,
   ) {
     super({
       jwtFromRequest: fromAuthHeaderAsBearerToken,

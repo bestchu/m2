@@ -1,5 +1,4 @@
-import { PrismaClient } from '../prisma/client';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaClient, PrismaService } from '../prisma';
 import { Request } from '@nestjs/common';
 export interface Context {
   prisma: PrismaClient;

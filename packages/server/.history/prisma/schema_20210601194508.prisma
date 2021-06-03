@@ -9,7 +9,7 @@ datasource db {
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["filterJson"]
-//  output          = "../src/prisma/client"
+  output   = "../src/prisma/client"
 }
 
 enum Gender {
@@ -35,7 +35,7 @@ enum Gender {
 
 // https://developers.weixin.qq.com/miniprogram/dev/api/open-api/user-info/UserInfo.html
 model Account {
-  id        String            @id @default(cuid())
+  id             String              @id @default(cuid())
   //@g.label("用户名")
   //@g.desc("用户名")
   //@g.helpText("")
@@ -44,34 +44,49 @@ model Account {
   //@g.search("keyword","contains")
   //@g.update()
   //@g.create("对外字段名","操作运算符")
-  username  String            @unique @db.VarChar(128)
-  email     String?           @unique @db.VarChar(128)
-  mobile    String?           @unique @db.VarChar(32)
+  username       String              @unique @db.VarChar(128)
+  email          String?             @unique @db.VarChar(128)
+  mobile         String?             @unique @db.VarChar(32)
   //@g.label("用户昵称")
-  nickName  String?
+  nickName       String?
   //@g.label("用户头像图片")
-  avatarUrl String?
+  avatarUrl      String?
   //性别 0：未知、1：男、2：女
   //@g.label("用户性别")
-  gender    Int?
+  gender         Int?
   //@g.label("用户所在国家")
-  province  String?
+  province       String?
   //@g.label("用户所在省份")
-  city      String?
+  city           String?
   //@g.label("用户所在城市")
-  country   String?
+  country        String?
   //显示 country，province，city 所用的语言
   //@g.label("用户所用的语言")
-  language  String?
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @updatedAt
+  language       String?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
   //@g.ignore()
-  localAuth AccountLocalAuth?
-  authLogs  AccountAuthLog[]
+  localAuth      AccountLocalAuth?
+  profile        AccountProfile?
+  authLogs       AccountAuthLog[]
+  manageJobs     ProjectJob[]
+  projects       ProjectPermission[]
+  wechatAuth     AccountWechatAuth?
+  subscriberJobs ProjectJob[]        @relation("project_job_subscriber")
   //@@g.module("account")
   //@@g.exclude("create")
 
   @@map(name: "account")
+}
+
+model AccountProfile {
+  aid       String   @id
+  account   Account  @relation(fields: [aid], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  //@@g.module("account")
+  @@map(name: "account_profile")
 }
 
 model AccountLocalAuth {
@@ -83,6 +98,20 @@ model AccountLocalAuth {
 
   //@@g.module("account")
   @@map(name: "account_local_auth")
+}
+
+model AccountWechatAuth {
+  aid         String  @id
+  openid      String  @unique
+  unionid     String? @unique
+  session_key String
+  account     Account @relation(fields: [aid], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  //@@g.module("account")
+  @@map(name: "account_wechat_auth")
 }
 
 model AccountAuthLog {

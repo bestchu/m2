@@ -36,7 +36,8 @@ export class NestedDateTimeFilter implements Prisma.NestedDateTimeFilter {
 @InputType()
 export class DateTimeFilter
   extends NestedDateTimeFilter
-  implements Prisma.DateTimeFilter {
+  implements Prisma.DateTimeFilter
+{
   @IsOptional()
   @IsInstance(NestedDateTimeFilter, { each: false })
   @Field(() => NestedDateTimeFilter, { nullable: true })

@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
-import { PrismaClient } from './client';
+import { PrismaClient } from '@prisma/client';
 export let prismaClient: PrismaService;
 @Injectable()
 export class PrismaService

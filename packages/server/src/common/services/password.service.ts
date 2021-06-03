@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { hash, compare } from 'bcrypt';
-import { ConfigKeys, Config } from '../../config';
+import { compare, hash } from 'bcrypt';
+import { Conf, confKey } from '../../config';
 
 /** Salt or number of rounds to generate a salt */
 export type Salt = string | number;
@@ -16,8 +16,7 @@ export class PasswordService {
    * salt will be generated with the specified number of rounds and used
    */
   salt: Salt;
-
-  constructor(@Inject(ConfigKeys.security) securityConfig: Config['security']) {
+  constructor(@Inject(confKey('security')) securityConfig: Conf<'security'>) {
     const saltOrRounds = securityConfig.bcryptSaltOrRound;
     this.salt = parseSalt(saltOrRounds);
   }

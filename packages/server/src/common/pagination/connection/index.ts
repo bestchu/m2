@@ -9,7 +9,7 @@ export * from './interfaces';
 
 export async function findManyCursorConnection<
   Model = { id: string },
-  Cursor = { id: string } | any
+  Cursor = { id: string } | any,
 >(
   findMany: (args: PrismaFindManyArguments<Cursor>) => Promise<Model[]>,
   aggregate: () => Promise<number>,
@@ -142,11 +142,10 @@ type NoPaginationArguments = Record<string, unknown>;
 function getDefaultOptions<Model, Cursor>() {
   return {
     getCursor: (node: Model) =>
-      (({ id: ((node as unknown) as { id: string }).id } as unknown) as Cursor),
-    encodeCursor: (cursor: Cursor) =>
-      ((cursor as unknown) as { id: string }).id,
+      ({ id: (node as unknown as { id: string }).id } as unknown as Cursor),
+    encodeCursor: (cursor: Cursor) => (cursor as unknown as { id: string }).id,
     decodeCursor: (cursorString: string) =>
-      (({ id: cursorString } as unknown) as Cursor),
+      ({ id: cursorString } as unknown as Cursor),
   };
 }
 

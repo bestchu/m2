@@ -9,7 +9,7 @@ datasource db {
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["filterJson"]
-//  output          = "../src/prisma/client"
+  output          = "../src/prisma/client"
 }
 
 enum Gender {

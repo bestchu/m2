@@ -1,4 +1,4 @@
-import { ConfigType, registerAs } from '@nestjs/config';
+import { registerAs } from '@nestjs/config';
 
 export const key = 'security';
 export const config = registerAs(key, () => ({
@@ -7,4 +7,3 @@ export const config = registerAs(key, () => ({
   refreshIn: process.env.JWT_REFRESH_IN || '7d',
   bcryptSaltOrRound: process.env.BCRYPT_SALT_ROUND || '10',
 }));
-export type Config = ConfigType<typeof config>;

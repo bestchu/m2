@@ -1,4 +1,4 @@
-import { ConfigType, registerAs } from '@nestjs/config';
+import { registerAs } from '@nestjs/config';
 import { join } from 'path';
 import { GqlModuleOptions } from '@nestjs/graphql';
 export const key = 'graphql';
@@ -17,4 +17,3 @@ export const config = registerAs(
     } as GqlModuleOptions),
 );
 // as GqlModuleOptions
-export type Config = ConfigType<typeof config>;

@@ -47,7 +47,9 @@ export class NestedFloatFilter implements Prisma.NestedFloatFilter {
 @InputType()
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-export class FloatFilter extends NestedFloatFilter implements Prisma.FloatFilter
+export class FloatFilter
+  extends NestedFloatFilter
+  implements Prisma.FloatFilter
 {
   @IsOptional()
   @IsInstance(NestedFloatFilter, { each: false })

@@ -1,15 +1,9 @@
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { INestApplication } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { ConfigKeys, Config } from '../config';
-export function swaggerSetup(
-  app: INestApplication,
-  configService: ConfigService,
-) {
-  const appConfig = configService.get<Config['app']>(ConfigKeys.app);
-  const swaggerConfig = configService.get<Config['swagger']>(
-    ConfigKeys.swagger,
-  );
+import { Conf, confKey } from '../config';
+export function swaggerSetup(app: INestApplication) {
+  const appConfig = app.get<Conf<'app'>>(confKey('app'));
+  const swaggerConfig = app.get<Conf<'swagger'>>(confKey('swagger'));
   const config = new DocumentBuilder()
     .setTitle(appConfig.serverName)
     .setDescription(`${appConfig.serverName} restful API`)

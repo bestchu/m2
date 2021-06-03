@@ -13,10 +13,10 @@ import { GraphqlModule } from './graphql/graphql.module';
   imports: [
     EventEmitterModule.forRoot(),
     ConfigModule,
-    CommonModule,
     PrismaModule,
+    CommonModule,
     GraphqlModule,
-    // ModulesModule,
+    // // ModulesModule,
     AuthModule,
     AccountModule,
   ],

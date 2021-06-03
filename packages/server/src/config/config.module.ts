@@ -1,8 +1,7 @@
 import { ConfigModule as Module } from '@nestjs/config';
-import { ConfigList } from './index';
+import { Conf } from './index';
 
 export const ConfigModule = Module.forRoot({
-  load: ConfigList,
+  load: Object.values(Conf),
   isGlobal: true,
 });
-console.log(ConfigModule);
