@@ -1,13 +1,12 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { IsInt, IsOptional, IsInstance } from 'class-validator';
 import { GraphQLFloat } from 'graphql';
-import { Prisma } from '../../prisma';
-import { NestedStringFilter } from './string.filter';
+import { Prisma as P } from '../../prisma';
 
 @InputType()
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-export class NestedFloatFilter implements Prisma.NestedFloatFilter {
+export class NestedFloatFilter implements P.NestedFloatFilter {
   @IsOptional()
   @IsInt({ each: false })
   @Field(() => GraphQLFloat, { nullable: true })
@@ -47,10 +46,7 @@ export class NestedFloatFilter implements Prisma.NestedFloatFilter {
 @InputType()
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-export class FloatFilter
-  extends NestedFloatFilter
-  implements Prisma.FloatFilter
-{
+export class FloatFilter extends NestedFloatFilter implements P.FloatFilter {
   @IsOptional()
   @IsInstance(NestedFloatFilter, { each: false })
   @Field(() => NestedFloatFilter, { nullable: true })
