@@ -4,11 +4,9 @@ import { JwtService } from '@nestjs/jwt';
 import { Account } from '../../account/entities';
 import { Credentials } from '../dto';
 import { Token } from '../entities';
-import { AccountService } from '../../account/services';
+import { AccountService, AccountValidateService } from '../../account/services';
 import { PasswordService } from '../../common/services/password.service';
 import { plainToClass } from 'class-transformer';
-import { NotFoundException } from '@nestjs/common';
-import { BadRequestException } from '@nestjs/common';
 import { JwtDto } from '../dto';
 
 @Injectable()
@@ -17,27 +15,19 @@ export class AuthService {
   private readonly jwtService: JwtService;
   @Inject(AccountService)
   private readonly accountService: AccountService;
+  @Inject(AccountValidateService)
+  private readonly accountValidateService: AccountValidateService;
   @Inject(PasswordService)
   private readonly passwordService: PasswordService;
   public async login(data: Credentials) {
-    const account = await this.accountService.prisma.account.findUnique({
-      include: { localAuth: true },
-      where: {
-        username: data.username,
-      },
-    });
+    const account = await this.accountValidateService.validateLocal(
+      data.username,
+      data.password,
+    );
     if (account) {
-      if (
-        await this.passwordService.compare(
-          data.password,
-          account.localAuth.password,
-        )
-      ) {
-        return this.auth(plainToClass(Account, account));
-      }
-      throw new BadRequestException('Invalid password');
+      return this.auth(account);
     } else {
-      throw new NotFoundException(`No user found for email: ${data.username}`);
+      throw new UnauthorizedException(`Invalid username or password`);
     }
   }
   public auth(account: Account) {

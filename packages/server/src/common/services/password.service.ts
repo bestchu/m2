@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { compare, hash } from 'bcrypt';
+import { compare, hash, genSalt } from 'bcrypt';
 import { Conf, confKey } from '../../config';
 
 /** Salt or number of rounds to generate a salt */
@@ -35,6 +35,7 @@ export class PasswordService {
    * @return encrypted password
    */
   hash(password: string): Promise<string> {
+    // const salt = await genSalt(this.salt);
     return hash(password, this.salt);
   }
 }

@@ -1,24 +1,13 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Prisma, PrismaService } from '../../prisma';
 import { PasswordService } from '../../common/services/password.service';
 
 @Injectable()
-export class AccountService implements OnModuleInit {
+export class AccountService {
   constructor(
     public readonly prisma: PrismaService,
     public readonly password: PasswordService,
   ) {}
-
-  async onModuleInit() {
-    await this.prisma.account.upsert({
-      where: { username: 'admin' },
-      create: {
-        username: 'admin',
-        localAuth: { create: { password: await this.password.hash('admin') } },
-      },
-      update: {},
-    });
-  }
 
   create<T extends Prisma.AccountCreateArgs>(
     args: Prisma.SelectSubset<T, Prisma.AccountCreateArgs>,

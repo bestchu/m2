@@ -3,7 +3,7 @@ import { Conf, confKey } from '../../config';
 import { JwtOptionsFactory, JwtModuleOptions } from '@nestjs/jwt';
 @Injectable()
 export class JwtConfigService implements JwtOptionsFactory {
-  @Inject(confKey('swagger'))
+  @Inject(confKey('security'))
   private securityConfig: Conf<'security'>;
   public createJwtOptions(): Promise<JwtModuleOptions> | JwtModuleOptions {
     return {

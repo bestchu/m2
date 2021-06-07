@@ -5,6 +5,7 @@ import { EOL } from 'os';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { swaggerSetup } from './swagger';
 import { json, urlencoded } from 'body-parser';
+import { AllExceptionsFilter } from './common/exceptions';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -15,7 +16,12 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
-      skipMissingProperties: false,
+      // disableErrorMessages: false,
+      // validationError: {
+      //   // target: true,
+      //   // value: true,
+      // },
+      // skipMissingProperties: false,
     }),
   );
   app.use(
@@ -25,6 +31,7 @@ async function bootstrap() {
       parameterLimit: appConfig.bodyParameterLimit,
     }),
   );
+  app.useGlobalFilters(new AllExceptionsFilter());
   swaggerSetup(app);
   // Starts listening for shutdown hooks
   app.enableShutdownHooks();
