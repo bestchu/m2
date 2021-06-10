@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory } from 'ice';
 import { Avatar, Overlay, Menu, Icon } from '@alifd/next';
 import styles from './index.module.scss';
 
@@ -27,6 +28,26 @@ const UserProfile = ({ name, avatar, mail }) => {
 
 const HeaderAvatar = (props: Props) => {
   const { name, avatar } = props;
+  const history = useHistory();
+  const onAvatarMenuClick = (key: string) => {
+    switch (key) {
+      case 'exit': {
+        history.push('/user/login');
+        break;
+      }
+      case 'account': {
+        history.push('/person');
+        break;
+      }
+      case 'set': {
+        history.push('/settings');
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+  };
   return (
     <Popup
       trigger={
@@ -39,10 +60,19 @@ const HeaderAvatar = (props: Props) => {
     >
       <div className={styles.avatarPopup}>
         <UserProfile {...props} />
-        <Menu className={styles.menu}>
-          <Item><Icon size="small" type="account" />个人设置</Item>
-          <Item><Icon size="small" type="set" />系统设置</Item>
-          <Item><Icon size="small" type="exit" />退出</Item>
+        <Menu className={styles.menu} onItemClick={onAvatarMenuClick}>
+          <Item key="account">
+            <Icon size="small" type="account" />
+            个人设置
+          </Item>
+          <Item key="set">
+            <Icon size="small" type="set" />
+            系统设置
+          </Item>
+          <Item key="exit">
+            <Icon size="small" type="exit" />
+            退出
+          </Item>
         </Menu>
       </div>
     </Popup>

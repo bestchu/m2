@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory, Link } from 'ice';
 import { Input, Message, Form, Divider, Checkbox, Icon } from '@alifd/next';
 
 import { useInterval } from './utils';
@@ -27,9 +28,8 @@ interface LoginProps {
   dataSource?: IDataSource;
 }
 
-const LoginBlock: React.FunctionComponent<LoginProps> = (
-  props = { dataSource: DEFAULT_DATA },
-): JSX.Element => {
+const LoginBlock: React.FunctionComponent<LoginProps> = (props = { dataSource: DEFAULT_DATA }): JSX.Element => {
+  const history = useHistory();
   const { dataSource = DEFAULT_DATA } = props;
 
   const [postData, setValue] = useState(dataSource);
@@ -67,7 +67,10 @@ const LoginBlock: React.FunctionComponent<LoginProps> = (
       return;
     }
     console.log('values:', values);
-    Message.success('登录成功');
+    Message.success({
+      title: '登录成功',
+      afterClose: () => history.push('/'),
+    });
   };
 
   const phoneForm = (
@@ -167,12 +170,7 @@ const LoginBlock: React.FunctionComponent<LoginProps> = (
           </div>
 
           <Item style={{ marginBottom: 10 }}>
-            <Form.Submit
-              type="primary"
-              onClick={handleSubmit}
-              className={styles.submitBtn}
-              validate
-            >
+            <Form.Submit type="primary" onClick={handleSubmit} className={styles.submitBtn} validate>
               登录
             </Form.Submit>
           </Item>
@@ -181,9 +179,9 @@ const LoginBlock: React.FunctionComponent<LoginProps> = (
               其他登录方式 <Icon type="atm" size="small" /> <Icon type="atm" size="small" />{' '}
               <Icon type="atm" size="small" />
             </div>
-            <a href="/" className={styles.link}>
+            <Link to="/user/register" className={styles.link}>
               注册账号
-            </a>
+            </Link>
           </div>
         </Form>
       </div>

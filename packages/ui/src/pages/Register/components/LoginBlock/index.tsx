@@ -1,5 +1,6 @@
 /* eslint-disable @iceworks/best-practices/no-secret-info */
 import React, { useState } from 'react';
+import { Link } from 'ice';
 import PropTypes from 'prop-types';
 import { Input, Message, Form } from '@alifd/next';
 
@@ -146,9 +147,9 @@ export default function RegisterBlock() {
             </Form.Submit>
           </Item>
           <Item style={{ textAlign: 'center' }}>
-            <a href="/" className={styles.link}>
+            <Link to="/user/login" className={styles.link}>
               使用已有账号登录
-            </a>
+            </Link>
           </Item>
         </Form>
       </div>
