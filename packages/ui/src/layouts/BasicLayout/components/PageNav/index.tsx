@@ -48,7 +48,7 @@ function getSubMenuOrItem(item: IMenuItem, index?: number | string, auth?: any) 
     if (childrenItems && childrenItems.length > 0) {
       const subNav = (
         <SubNav
-          key={item.name}
+          key={`${index || item.name}`}
           icon={item.icon}
           label={item.name}
         >
@@ -105,9 +105,12 @@ const Navigation = (props, context) => {
       iconOnly={isCollapse}
       hasArrow={false}
       mode={isCollapse ? 'popup' : 'inline'}
-      onOpen={(keys) => {
-        // @ts-ignore
-        setOpenKeys(keys);
+      onOpen={(keys, extra) => {
+        const currentKeys = extra.key.split('-').reduce((res, item, index) => {
+          res.push(index ? `${res[index - 1]}-${item}` : item);
+          return res;
+        }, [] as string[]);
+        setOpenKeys(extra.open ? currentKeys.slice(1) : currentKeys.slice(1, currentKeys.length - 1));
       }}
     >
       {getNavMenuItems(asideMenuConfig, 0, AUTH_CONFIG)}
