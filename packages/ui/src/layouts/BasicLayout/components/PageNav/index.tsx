@@ -20,6 +20,13 @@ export interface IMenuItem {
   icon?: string;
   children?: IMenuItem[];
 }
+function getOpenKeys(key: string, open: boolean) {
+  const currentKeys = key.split('-').reduce((res, item, index) => {
+    res.push(index ? `${res[index - 1]}-${item}` : item);
+    return res;
+  }, [] as string[]);
+  return open ? currentKeys.slice(1) : currentKeys.slice(1, currentKeys.length - 1);
+}
 
 function getNavMenuItems(menusData: any[], initIndex?: number | string, auth?: any) {
   if (!menusData) {
@@ -27,9 +34,10 @@ function getNavMenuItems(menusData: any[], initIndex?: number | string, auth?: a
   }
 
   return menusData
-    .filter((item) => {
+    .filter((item, index) => {
       let roleAuth = true;
       // if item.roles is [] or undefined, roleAuth is true
+      item.key = `${initIndex}-${index}`;
       if (auth && item.auth && item.auth instanceof Array) {
         if (item.auth.length) {
           roleAuth = item.auth.some((key) => auth[key]);
@@ -38,7 +46,7 @@ function getNavMenuItems(menusData: any[], initIndex?: number | string, auth?: a
       return item.name && !item.hideInMenu && roleAuth;
     })
     .map((item, index) => {
-      return getSubMenuOrItem(item, `${initIndex}-${index}`, auth);
+      return getSubMenuOrItem(item, item.key, auth);
     });
 }
 
@@ -79,19 +87,27 @@ const Navigation = (props, context) => {
   const { isCollapse } = context;
 
   useEffect(() => {
-    const curSubNav = asideMenuConfig.find((menuConfig) => {
-      return menuConfig.children && checkChildPathExists(menuConfig);
+    let curNavKey = '';
+    const curSubNav = asideMenuConfig.find((menuConfig, index) => {
+      return menuConfig.children && checkChildPathExists(menuConfig, `${index}`);
     });
 
-    function checkChildPathExists(menuConfig) {
-      return menuConfig.children.some((child) => {
-        return child.children ? checkChildPathExists(child) : child.path === pathname;
+    function checkChildPathExists(menuConfig, initIndex: string) {
+      return menuConfig.children.some((child, index) => {
+        const key = `${initIndex}-${index}`;
+        if (child.children) return checkChildPathExists(child, key);
+        if (child.path === pathname) {
+          curNavKey = `0-${key}`;
+          return true;
+        }
+        return false;
       });
     }
-
-    if (curSubNav && !openKeys.includes(curSubNav.name)) {
-      setOpenKeys([...openKeys, curSubNav.name]);
-    }
+    // console.log(curSubNav, openKeys, getOpenKeys(curNavKey, false));
+    // if (curSubNav && !openKeys.includes(curSubNav.name)) {
+    //   setOpenKeys([...openKeys, curSubNav.name]);
+    // }
+    setOpenKeys(getOpenKeys(curNavKey, false));
   }, [pathname]);
 
   return (
@@ -106,11 +122,7 @@ const Navigation = (props, context) => {
       hasArrow={false}
       mode={isCollapse ? 'popup' : 'inline'}
       onOpen={(keys, extra) => {
-        const currentKeys = extra.key.split('-').reduce((res, item, index) => {
-          res.push(index ? `${res[index - 1]}-${item}` : item);
-          return res;
-        }, [] as string[]);
-        setOpenKeys(extra.open ? currentKeys.slice(1) : currentKeys.slice(1, currentKeys.length - 1));
+        setOpenKeys(getOpenKeys(extra.key, extra.open));
       }}
     >
       {getNavMenuItems(asideMenuConfig, 0, AUTH_CONFIG)}
